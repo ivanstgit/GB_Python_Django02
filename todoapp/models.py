@@ -57,6 +57,10 @@ class ToDo(models.Model):
         help_text=_("Status: To Do is active (not closed)."),
     )
 
+    def delete(self, *args):
+        self.is_active = False
+        self.save()
+
     class Meta:
         verbose_name = _("ToDo")
         verbose_name_plural = _("ToDos")
