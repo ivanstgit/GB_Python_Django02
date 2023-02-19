@@ -1,4 +1,4 @@
-from rest_framework.serializers import BooleanField, DateTimeField, ModelSerializer, SlugRelatedField
+from rest_framework.serializers import DateTimeField, ModelSerializer, SlugRelatedField
 
 from userapp.views import CustomUserModelViewSet
 
@@ -14,7 +14,7 @@ class ProjectModelSerializer(ModelSerializer):
 
 
 class ToDoModelSerializer(ModelSerializer):
-    is_active = BooleanField(default=True)
+    # is_active = BooleanField(default=True)
     # user_created = SlugRelatedField(read_only=True, slug_field="username")
     user_created = SlugRelatedField(slug_field="username", queryset=CustomUserModelViewSet.queryset)
     date_created = DateTimeField(read_only=True)
@@ -31,9 +31,10 @@ class ToDoModelSerializer(ModelSerializer):
     class Meta:
         model = ToDo
         fields = [
+            "id",
             "project",
             "content",
-            "is_active",
+            # "is_active",
             "user_created",
             "date_created",
             "date_updated",
