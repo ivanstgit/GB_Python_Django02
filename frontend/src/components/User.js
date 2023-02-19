@@ -11,7 +11,7 @@ const UserItem = ({ user }) => {
     )
 }
 
-const UserList = ({ users }) => {
+const UserList = ({ items }) => {
     return (
         <table>
             <thead>
@@ -23,7 +23,7 @@ const UserList = ({ users }) => {
                 </tr>
             </thead>
             <tbody>
-                {users.map((user) => <UserItem user={user} />)}
+                {items.map((user, index) => <UserItem key={'User'+index} user={user} />)}
             </tbody>
         </table>
     )

@@ -15,4 +15,4 @@ class CustomUserModelViewSet(
     lookup_field = "username"
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserModelSerializer
-    pagination_class = PageNumberPagination
+    # pagination_class = PageNumberPagination
