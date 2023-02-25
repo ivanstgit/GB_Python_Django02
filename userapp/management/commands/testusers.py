@@ -1,5 +1,6 @@
 # create or delete must be set
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand
 
 MODES = ["create", "delete"]
@@ -22,6 +23,36 @@ TEST_USERS = [
         "email": "testuser002@ru.ru",
         "is_superuser": False,
         "is_staff": False,
+    },
+    {
+        "username": "testProjectOwner",
+        "password": "testuser_P$wD!",
+        "first_name": "test",
+        "last_name": "PO",
+        "email": "testProjectOwner@ru.ru",
+        "is_superuser": False,
+        "is_staff": False,
+        "groups": ["ProjectOwners"],
+    },
+    {
+        "username": "testDeveloper",
+        "password": "testuser_P$wD!",
+        "first_name": "test",
+        "last_name": "Dev",
+        "email": "testDeveloper@ru.ru",
+        "is_superuser": False,
+        "is_staff": False,
+        "groups": ["Developers"],
+    },
+    {
+        "username": "testAdmin",
+        "password": "testuser_P$wD!",
+        "first_name": "test",
+        "last_name": "Dev",
+        "email": "testAdmin@ru.ru",
+        "is_superuser": False,
+        "is_staff": False,
+        "groups": ["Administrators"],
     },
 ]
 
@@ -47,6 +78,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         user_model = get_user_model()
 
+        # create
         if options.get("mode") == MODES[0]:
             for tuser in TEST_USERS:
                 uname = tuser.get("username")
@@ -67,7 +99,17 @@ class Command(BaseCommand):
                     user.is_superuser = tuser.get("is_superuser")
                     user.is_staff = tuser.get("is_staff")
                     user.save()
+
                     self.stdout.write(self.style.SUCCESS(f"User {uname} created succsessfully"))
+
+                groups = tuser.get("groups")
+                if groups and user:
+                    for group_name in groups:
+                        group = Group.objects.get(name=group_name)
+                        user.groups.add(group)
+                        user.save()
+                        self.stdout.write(self.style.SUCCESS(f"Group {group_name} added for {uname}"))
+
         elif options.get("mode") == MODES[1]:
             for tuser in TEST_USERS:
                 uname = tuser.get("username")
