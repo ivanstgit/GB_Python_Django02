@@ -3,7 +3,11 @@ from rest_framework.viewsets import ModelViewSet
 
 from .filters import ProjectFilter, ToDoFilter
 from .models import Project, ToDo
-from .serializers import ProjectModelSerializer, ToDoModelSerializer
+from .serializers import (
+    ProjectModelSerializer,
+    ToDoModelSerializer,
+    ToDoModelSerializerBase,
+)
 
 
 class ProjectPageNumberPagination(PageNumberPagination):
@@ -26,6 +30,11 @@ class ToDoModelViewSet(ModelViewSet):
     serializer_class = ToDoModelSerializer
     pagination_class = ToDoPageNumberPagination
     filterset_class = ToDoFilter
+
+    def get_serializer_class(self):
+        if self.request.method in ["GET"]:
+            return ToDoModelSerializer
+        return ToDoModelSerializerBase
 
     # def perform_create(self, serializer):
     #     request = serializer.context["request"]
