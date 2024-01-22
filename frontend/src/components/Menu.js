@@ -3,17 +3,17 @@ import { Link } from "react-router-dom";
 
 
 const MenuItem = ({ item, index, login, logout_func }) => {
-  if (item.isLoginLink && login != '' && login != undefined) {
+  if (item.isLoginLink && login !== '' && login !== undefined) {
     return (
       <td>{login}</td>
     )
   }
-  if (item.isLogoutLink && (login == '' || login == undefined)) {
+  if (item.isLogoutLink && (login === '' || login === undefined)) {
     return (
       <td> </td>
     )
   }
-  if (item.isLogoutLink && (login != '' || login != undefined)) {
+  if (item.isLogoutLink && (login !== '' || login !== undefined)) {
     return (
       <td>
         <button onClick={logout_func}>Logout</button>
