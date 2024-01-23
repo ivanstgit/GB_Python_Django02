@@ -25,6 +25,8 @@ from rest_framework_simplejwt.views import (
 )
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from config.schema import PrivateGraphQLView, schema
+
 
 from todoapp.views import ProjectModelViewSet, ToDoModelViewSet
 from userapp.views import CustomUserModelViewSet
@@ -71,4 +73,5 @@ urlpatterns = [
         schema_view.with_ui("redoc", cache_timeout=0),
         name="schema-redoc",
     ),
+    path("graphql/", PrivateGraphQLView.as_view(graphiql=True, schema=schema)),
 ]
