@@ -5,7 +5,7 @@ from .filters import ProjectFilter, ToDoFilter
 from .models import Project, ToDo
 from .serializers import (
     ProjectModelSerializer,
-    ToDoModelSerializer,
+    ToDoModelSerializerGet,
     ToDoModelSerializerBase,
 )
 
@@ -27,15 +27,16 @@ class ToDoPageNumberPagination(PageNumberPagination):
 
 class ToDoModelViewSet(ModelViewSet):
     queryset = ToDo.objects.filter(is_active=True)
-    serializer_class = ToDoModelSerializer
+    serializer_class = ToDoModelSerializerGet
     pagination_class = ToDoPageNumberPagination
     filterset_class = ToDoFilter
 
     def get_serializer_class(self):
         if self.request.method in ["GET"]:
-            return ToDoModelSerializer
+            return ToDoModelSerializerGet
         return ToDoModelSerializerBase
 
-    # def perform_create(self, serializer):
-    #     request = serializer.context["request"]
-    #     serializer.save( user_created = request.user )
+    # On create reads user from context
+    def perform_create(self, serializer):
+        request = serializer.context["request"]
+        serializer.save(user_created=request.user)

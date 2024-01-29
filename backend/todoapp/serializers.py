@@ -12,12 +12,14 @@ class ProjectModelSerializer(ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ["name", "repo_link", "participants"]
+        fields = ["id", "name", "repo_link", "participants"]
 
 
 class ToDoModelSerializerBase(ModelSerializer):
     date_created = DateTimeField(read_only=True)
     date_updated = DateTimeField(read_only=True)
+    # Update users by login in view
+    user_created = SlugRelatedField(read_only=True, slug_field="username")
 
     class Meta:
         model = ToDo
@@ -29,14 +31,28 @@ class ToDoModelSerializerBase(ModelSerializer):
             "date_created",
             "date_updated",
         ]
+        # extra_kwargs = {'user_created': {'default': CurrentUserDefault()}}
 
 
-class ToDoModelSerializer(ToDoModelSerializerBase):
-    # is_active = BooleanField(default=True)
-    # user_created = SlugRelatedField(read_only=True, slug_field="username")
+class ToDoModelSerializerGet(ToDoModelSerializerBase):
+    # Display users by login
     user_created = SlugRelatedField(
         slug_field="username", queryset=CustomUserModelViewSet.queryset
     )
+
+    class Meta:
+        model = ToDo
+
+        fields = [
+            "id",
+            "project",
+            "content",
+            "user_created",
+            "date_created",
+            "date_updated",
+        ]
+
+        depth = 1
 
     # # def create(self, validated_data):
     # #     uname = CurrentUserDefault()
