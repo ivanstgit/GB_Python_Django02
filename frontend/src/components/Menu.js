@@ -1,43 +1,73 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useResolvedPath, useMatch } from "react-router-dom";
 
+import { useAuth } from "../hooks/AuthProvider";
+import AppPaths from "../routes/AppPaths.js"
 
-const MenuItem = ({ item, index, login, logout_func }) => {
-  if (item.isLoginLink && login !== '' && login !== undefined) {
+const LoginArea = () => {
+  const auth = useAuth();
+
+  if (auth.isAuthenticated) {
     return (
-      <td>{login}</td>
+      <div>
+        <button className="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block"
+          onClick={auth.logOutFunc} >{auth.login} <u>(logout)</u>
+        </button>
+      </div>
+    )
+  } else {
+    return (
+      <div>
+        <Link className="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block border-bottom"
+          key="MenuLogout" to={AppPaths.login}>Sign in</Link>
+      </div>
     )
   }
-  if (item.isLogoutLink && (login === '' || login === undefined)) {
-    return (
-      <td> </td>
-    )
-  }
-  if (item.isLogoutLink && (login !== '' || login !== undefined)) {
-    return (
-      <td>
-        <button onClick={logout_func}>Logout</button>
-      </td>)
-  }
 
-  return (
-    <td>
-      <Link key={'MenuItem_' + index} to={item.link}>{item.text}</Link>
-    </td>
-  )
+}
+const MenuItem = ({ item, index }) => {
+  const resolvedPath = useResolvedPath(item.link)
+  const isActive = useMatch({ path: resolvedPath.pathname }) ? " active" : ""
+  // console.log(resolvedPath.pathname + isActive)
+
+  return (<Link key={'MenuItem_' + index} to={item.link} className={"nav-item nav-link" + isActive}>{item.text}</Link>)
 }
 
-const MenuItems = ({ items, login, logout_func }) => {
+const MenuItems = () => {
+
+  const items = [
+    {
+      link: AppPaths.users,
+      text: 'Users',
+    },
+    {
+      link: AppPaths.projects,
+      text: 'Projects',
+    },
+    {
+      link: AppPaths.todos,
+      text: 'ToDos',
+    }
+  ]
+
   return (
-    <div className="App-menu">
-      <table>
-        <tbody>
-          <tr>
-            {items.map((item, index) => <MenuItem key={'MenuItem' + index} item={item} index={index} login={login} logout_func={logout_func} />)}
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <nav className="navbar navbar-expand-lg bg-white navbar-light sticky-top p-0 wow fadeIn shadow-sm">
+
+      <Link className="navbar-brand d-flex align-items-center px-4 px-lg-5" key={'MenuLogo'} to={"/"}>
+        <h1 className="m-0 text-primary">To Do List</h1>
+      </Link>
+      <button type="button" className="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span className="navbar-toggler-icon"></span>
+      </button>
+      <div className="collapse navbar-collapse" id="navbarCollapse">
+        <div className="navbar-nav ms-auto p-4 p-lg-0">
+
+          {items.map((item, index) => <MenuItem key={'MenuItem' + index} item={item} index={index} />)}
+
+        </div>
+        <LoginArea />
+      </div>
+    </nav>
   );
 }
 
