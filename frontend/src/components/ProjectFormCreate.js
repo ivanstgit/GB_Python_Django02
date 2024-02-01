@@ -3,6 +3,17 @@ import { Navigate } from "react-router-dom";
 
 import { useData, DATA_RESOURCES } from '../hooks/DataProvider.js'
 
+const isValidUrl = urlString => {
+    let url;
+    try {
+        url = new URL(urlString);
+    }
+    catch (e) {
+        return false;
+    }
+    return url.protocol === "http:" || url.protocol === "https:";
+}
+
 const ProjectFormCreate = (props) => {
     const dataProvider = useData()
     const users = dataProvider.users
@@ -19,11 +30,11 @@ const ProjectFormCreate = (props) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (input.name !== initState.name && input.repo_link !== initState.repo_link) {
+        if (input.name !== initState.name && input.repo_link !== initState.repo_link && isValidUrl(input.repo_link)) {
             dataProvider.postOne(DATA_RESOURCES.projects, input)
                 .then(res => {
                     if (res.error) {
-                        setError(error)
+                        setError(res.error)
                     } else {
                         dataProvider.refreshDelayed(DATA_RESOURCES.projects, 500);
                         setSuccess(true)
@@ -78,7 +89,7 @@ const ProjectFormCreate = (props) => {
                                 <div className="mb-3">
                                     <label className="form-label border-0" htmlFor="repoLink">Repository link</label>
                                     <input type="text" className="form-control border-0" id="repoLink" name="repo_link"
-                                        onChange={(event) => handleChange(event)} />
+                                        onChange={(event) => handleChange(event)} placeholder="http://" />
                                 </div>
                                 <div className="mb-3">
                                     <label className="form-label border-0" htmlFor="participants">Participants</label>

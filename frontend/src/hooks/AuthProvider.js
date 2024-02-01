@@ -25,6 +25,7 @@ const initialState = {
 }
 
 class AuthProvider extends React.Component {
+    //keeping auth data in state, maneges cookies, provides auth data
     constructor(props) {
         super(props)
         this.children = props.children

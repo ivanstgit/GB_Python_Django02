@@ -20,7 +20,7 @@ const ToDoFormCreate = (props) => {
             dataProvider.postOne(DATA_RESOURCES.todos, input)
                 .then(res => {
                     if (res.error) {
-                        setError(error)
+                        setError(res.error)
                     } else {
                         dataProvider.refreshDelayed(DATA_RESOURCES.todos, 500);
                         setSuccess(true)
