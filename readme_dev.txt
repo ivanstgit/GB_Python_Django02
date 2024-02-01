@@ -1,5 +1,25 @@
 ================================================
-Prepare machine
+Prepare for prod (than transfer to git)
+================================================
+backend:
+poetry export -f requirements.txt --output requirements.txt --without dev --without-hashes
+frontend:
+npm run build
+
+================================================
+Deployment (from git to docker-ready VM)
+================================================
+1. transfer src
+git clone ...
+2. update secrets
+1) generate django key from root folder (only first time):
+openssl rand -base64 40 >> secrets/django_secret_key.txt
+2) update files in secrets folder (allowed_hosts - your server hostname)
+3) update frontend/.env/production (REACT_APP_API_URL=http://<your server hostname>:8000/api
+3. build and run
+sudo docker-compose up --build
+================================================
+Prepare machine for dev 
 ================================================
 Prepare back:
 poetry install

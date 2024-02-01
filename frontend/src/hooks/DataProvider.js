@@ -79,8 +79,10 @@ const DataProvider = (props) => {
             }
         } catch (error) {
             console.log(error)
-            if (error.status === 401) {
+            if (error.response && error.response.status === 401) {
                 throw new TokenExpiredError("Token expired")
+            } else if (error.response && error.response.status === 400) {
+                return { data: null, error: JSON.stringify(error.response.data) || "Invalid input" }
             } else {
                 return { data: null, error: error.message }
             }
@@ -136,7 +138,7 @@ const DataProvider = (props) => {
             }
         } catch (error) {
             console.log(error)
-            if (error.status === 401) {
+            if (error.response && error.response.status === 401) {
                 throw new TokenExpiredError("Token expired")
             } else {
                 return { data: null, error: error.message }
@@ -161,7 +163,7 @@ const DataProvider = (props) => {
                 }
             } catch (error) {
                 console.log(error)
-                if (error.status === 401) {
+                if (error.response && error.response.status === 401) {
                     isTokenExpired = true;
                 } else {
                     return { data: [], error: error.message }
